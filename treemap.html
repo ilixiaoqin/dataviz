@@ -5,12 +5,19 @@
         <meta charset="UTF-8">
         <title>中证500行业分布</title>
         <meta http-equiv="Cache-Control" content="public, max-age=31536000">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
         <link rel="preconnect" href="https://cdn.jsdelivr.net">
         <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            }
             #chart-container {
-                width: 1200px;
-                height: 800px;
+                width: 100%;
+                height: 100vh;
+                max-width: 1200px;
                 margin: 0 auto;
             }
             .loading {
@@ -20,6 +27,11 @@
                 transform: translate(-50%, -50%);
                 font-size: 1.2em;
                 color: #666;
+            }
+            @media (max-width: 768px) {
+                #chart-container {
+                    height: 80vh;
+                }
             }
         </style>
     </head>
@@ -35,7 +47,7 @@
             // 异步加载echarts
             async function loadEcharts() {
                 try {
-                    await loadScript('https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js');
+                    await loadScript('https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js');
                     initChart();
                 } catch (error) {
                     console.error('Failed to load ECharts:', error);
@@ -74,7 +86,8 @@
                         data: chartData.children,
                         label: {
                             show: true,
-                            formatter: '{b}'
+                            formatter: '{b}',
+                            fontSize: 14
                         },
                         breadcrumb: {
                             show: false
@@ -84,7 +97,9 @@
                             height: 30
                         },
                         itemStyle: {
-                            borderColor: '#fff'
+                            borderColor: '#fff',
+                            borderWidth: 1,
+                            gapWidth: 2
                         },
                         levels: [{
                             itemStyle: {
@@ -95,7 +110,12 @@
                             upperLabel: {
                                 show: false
                             }
-                        }]
+                        }],
+                        visualDimension: 1,
+                        visualMin: 0,
+                        visualMax: Math.max(...chartData.children.map(d => d.value)),
+                        colorMappingBy: 'value',
+                        color: ['#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695']
                     }]
                 };
                 
@@ -103,7 +123,9 @@
                 document.querySelector('.loading').style.display = 'none';
                 
                 // 响应式调整
-                window.addEventListener('resize', () => chart.resize());
+                window.addEventListener('resize', () => {
+                    chart.resize();
+                });
             }
             
             // 开始加载
