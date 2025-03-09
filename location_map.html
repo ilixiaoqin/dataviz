@@ -1,4 +1,9 @@
-<!DOCTYPE html><html><head><meta charset=UTF-8><title>Awesome-pyecharts</title><script type=text/javascript src=js/echarts.min.js></script><script type=text/javascript src=js/china.js></script></head><body><div id=2f682bbdb17e40129ed359132f35860d class=chart-container style="width:1200px; height:800px; "></div><script>
+<!DOCTYPE html><html><head><meta charset=UTF-8><title>Awesome-pyecharts</title><script type=text/javascript src=js/echarts.min.js></script><script type=text/javascript src=js/china.js></script>
+        <meta http-equiv="Cache-Control" content="public, max-age=31536000">
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+        <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+</head><body><div id=2f682bbdb17e40129ed359132f35860d class=chart-container style="width:1200px; height:800px; "></div><script>
         var chart_2f682bbdb17e40129ed359132f35860d = echarts.init(
             document.getElementById('2f682bbdb17e40129ed359132f35860d'), 'light', {renderer: 'canvas'});
         var option_2f682bbdb17e40129ed359132f35860d = {
@@ -262,4 +267,37 @@
     }
 };
         chart_2f682bbdb17e40129ed359132f35860d.setOption(option_2f682bbdb17e40129ed359132f35860d);
-    </script></body></html>
+    </script><script>
+            // 异步加载echarts
+            function loadScript(src) {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = src;
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+            }
+            
+            // 按顺序加载脚本
+            async function loadCharts() {
+                try {
+                    await loadScript('https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js');
+                    await loadScript('js/china.js');
+                    // 初始化图表
+                    if (typeof initChart === 'function') {
+                        initChart();
+                    }
+                } catch (error) {
+                    console.error('Failed to load scripts:', error);
+                }
+            }
+            
+            loadCharts();
+        </script><script>
+            function initChart() {
+                var chart = echarts.init(document.getElementById(''));
+                
+                chart.setOption(option);
+            }
+        </script></body></html>
