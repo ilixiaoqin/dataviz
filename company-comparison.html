@@ -29,120 +29,138 @@
 <body>
     <h1>公司满意度对比工具</h1>
     
-    <div class="company-form">
-        <h2>第一家公司</h2>
-        <input type="text" id="company1-name" placeholder="公司名称">
-        <div>
-            <label>薪资待遇 (1-10): <input type="number" min="1" max="10" id="company1-salary"></label>
-        </div>
-        <div>
-            <label>人际关系 (1-10): <input type="number" min="1" max="10" id="company1-relationships"></label>
-        </div>
-        <div>
-            <label>学习成长 (1-10): <input type="number" min="1" max="10" id="company1-growth"></label>
-        </div>
-        <div>
-            <label>成就感 (1-10): <input type="number" min="1" max="10" id="company1-achievement"></label>
-        </div>
-        <div>
-            <label>工作生活平衡 (1-10): <input type="number" min="1" max="10" id="company1-balance"></label>
-        </div>
+    <div id="initial-input">
+        <label>请输入要对比的公司数量 (2-6家): 
+            <input type="number" id="company-count" min="2" max="6" value="2">
+        </label>
+        <button onclick="generateCompanyForms()">开始输入</button>
     </div>
 
-    <div class="company-form">
-        <h2>第二家公司</h2>
-        <input type="text" id="company2-name" placeholder="公司名称">
-        <div>
-            <label>薪资待遇 (1-10): <input type="number" min="1" max="10" id="company2-salary"></label>
-        </div>
-        <div>
-            <label>人际关系 (1-10): <input type="number" min="1" max="10" id="company2-relationships"></label>
-        </div>
-        <div>
-            <label>学习成长 (1-10): <input type="number" min="1" max="10" id="company2-growth"></label>
-        </div>
-        <div>
-            <label>成就感 (1-10): <input type="number" min="1" max="10" id="company2-achievement"></label>
-        </div>
-        <div>
-            <label>工作生活平衡 (1-10): <input type="number" min="1" max="10" id="company2-balance"></label>
-        </div>
-    </div>
+    <div id="company-forms-container"></div>
 
-    <button onclick="compareCompanies()">生成对比图</button>
+    <button id="compare-button" style="display: none;" onclick="compareCompanies()">生成对比图</button>
 
     <div class="chart-container">
         <canvas id="radarChart"></canvas>
     </div>
+    <div id="areas-container" style="margin-top: 20px; text-align: center;"></div>
 
     <script>
         let myRadarChart = null;
 
-        function compareCompanies() {
-            const company1Name = document.getElementById('company1-name').value;
-            const company2Name = document.getElementById('company2-name').value;
-
-            const company1Scores = [
-                Number(document.getElementById('company1-salary').value),
-                Number(document.getElementById('company1-relationships').value),
-                Number(document.getElementById('company1-growth').value),
-                Number(document.getElementById('company1-achievement').value),
-                Number(document.getElementById('company1-balance').value)
-            ];
-
-            const company2Scores = [
-                Number(document.getElementById('company2-salary').value),
-                Number(document.getElementById('company2-relationships').value),
-                Number(document.getElementById('company2-growth').value),
-                Number(document.getElementById('company2-achievement').value),
-                Number(document.getElementById('company2-balance').value)
-            ];
-
-            // 验证输入
-            if (!company1Name || !company2Name || company1Scores.some(isNaN) || company2Scores.some(isNaN)) {
-                alert('请填写所有字段！');
+        function generateCompanyForms() {
+            const count = Number(document.getElementById('company-count').value);
+            if (count < 2 || count > 6 || isNaN(count)) {
+                alert('请输入2-6之间的数字！');
                 return;
             }
 
-            if (company1Scores.some(score => score < 1 || score > 10) || 
-                company2Scores.some(score => score < 1 || score > 10)) {
-                alert('所有分数必须在1-10之间！');
-                return;
+            const container = document.getElementById('company-forms-container');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= count; i++) {
+                const companyForm = document.createElement('div');
+                companyForm.className = 'company-form';
+                companyForm.innerHTML = `
+                    <h2>第${i}家公司</h2>
+                    <input type="text" id="company${i}-name" placeholder="公司名称">
+                    <div>
+                        <label>薪资待遇 (1-10): <input type="number" min="1" max="10" id="company${i}-salary"></label>
+                    </div>
+                    <div>
+                        <label>人际关系 (1-10): <input type="number" min="1" max="10" id="company${i}-relationships"></label>
+                    </div>
+                    <div>
+                        <label>学习成长 (1-10): <input type="number" min="1" max="10" id="company${i}-growth"></label>
+                    </div>
+                    <div>
+                        <label>成就感 (1-10): <input type="number" min="1" max="10" id="company${i}-achievement"></label>
+                    </div>
+                    <div>
+                        <label>工作生活平衡 (1-10): <input type="number" min="1" max="10" id="company${i}-balance"></label>
+                    </div>
+                `;
+                container.appendChild(companyForm);
+            }
+
+            document.getElementById('compare-button').style.display = 'block';
+            document.getElementById('initial-input').style.display = 'none';
+        }
+
+        function calculateArea(scores) {
+            // 将分数转换为弧度
+            const angles = [0, 72, 144, 216, 288].map(deg => deg * Math.PI / 180);
+            let area = 0;
+            
+            // 使用多边形面积公式计算
+            for (let i = 0; i < 5; i++) {
+                const j = (i + 1) % 5;
+                const x1 = scores[i] * Math.cos(angles[i]);
+                const y1 = scores[i] * Math.sin(angles[i]);
+                const x2 = scores[j] * Math.cos(angles[j]);
+                const y2 = scores[j] * Math.sin(angles[j]);
+                area += (x1 * y2 - x2 * y1);
+            }
+            
+            return Math.abs(area) / 2;
+        }
+
+        function compareCompanies() {
+            const count = Number(document.getElementById('company-count').value);
+            const companies = [];
+            const colors = [
+                ['rgb(255, 99, 132)', 'rgba(255, 99, 132, 0.2)'],
+                ['rgb(54, 162, 235)', 'rgba(54, 162, 235, 0.2)'],
+                ['rgb(75, 192, 192)', 'rgba(75, 192, 192, 0.2)'],
+                ['rgb(255, 206, 86)', 'rgba(255, 206, 86, 0.2)'],
+                ['rgb(153, 102, 255)', 'rgba(153, 102, 255, 0.2)'],
+                ['rgb(255, 159, 64)', 'rgba(255, 159, 64, 0.2)']
+            ];
+
+            for (let i = 1; i <= count; i++) {
+                const name = document.getElementById(`company${i}-name`).value;
+                const scores = [
+                    Number(document.getElementById(`company${i}-salary`).value),
+                    Number(document.getElementById(`company${i}-relationships`).value),
+                    Number(document.getElementById(`company${i}-growth`).value),
+                    Number(document.getElementById(`company${i}-achievement`).value),
+                    Number(document.getElementById(`company${i}-balance`).value)
+                ];
+
+                if (!name || scores.some(isNaN)) {
+                    alert('请填写所有字段！');
+                    return;
+                }
+
+                if (scores.some(score => score < 1 || score > 10)) {
+                    alert('所有分数必须在1-10之间！');
+                    return;
+                }
+
+                companies.push({name, scores});
             }
 
             const ctx = document.getElementById('radarChart').getContext('2d');
-            
-            // 如果已经有图表，先销毁它
             if (myRadarChart) {
                 myRadarChart.destroy();
             }
+
+            const datasets = companies.map((company, index) => ({
+                label: company.name,
+                data: company.scores,
+                backgroundColor: colors[index][1],
+                borderColor: colors[index][0],
+                pointBackgroundColor: colors[index][0],
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: colors[index][0]
+            }));
 
             myRadarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
                     labels: ['薪资待遇', '人际关系', '学习成长', '成就感', '工作生活平衡'],
-                    datasets: [
-                        {
-                            label: company1Name,
-                            data: company1Scores,
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderColor: 'rgb(255, 99, 132)',
-                            pointBackgroundColor: 'rgb(255, 99, 132)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgb(255, 99, 132)'
-                        },
-                        {
-                            label: company2Name,
-                            data: company2Scores,
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                            borderColor: 'rgb(54, 162, 235)',
-                            pointBackgroundColor: 'rgb(54, 162, 235)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgb(54, 162, 235)'
-                        }
-                    ]
+                    datasets: datasets
                 },
                 options: {
                     elements: {
@@ -160,6 +178,14 @@
                         }
                     }
                 }
+            });
+
+            // 显示面积
+            const areasContainer = document.getElementById('areas-container');
+            areasContainer.innerHTML = '<h3>各公司五维评分面积：</h3>';
+            companies.forEach(company => {
+                const area = calculateArea(company.scores).toFixed(2);
+                areasContainer.innerHTML += `<p>${company.name}: ${area}</p>`;
             });
         }
     </script>
