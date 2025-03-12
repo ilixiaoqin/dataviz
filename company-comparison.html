@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公司满意度对比工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .company-form {
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 400px;
+            margin: 0 auto;
+        }
+        input[type="number"] {
+            width: 60px;
+        }
+    </style>
+</head>
+<body>
+    <h1>公司满意度对比工具</h1>
+    
+    <div class="company-form">
+        <h2>第一家公司</h2>
+        <input type="text" id="company1-name" placeholder="公司名称">
+        <div>
+            <label>薪资待遇 (1-10): <input type="number" min="1" max="10" id="company1-salary"></label>
+        </div>
+        <div>
+            <label>人际关系 (1-10): <input type="number" min="1" max="10" id="company1-relationships"></label>
+        </div>
+        <div>
+            <label>学习成长 (1-10): <input type="number" min="1" max="10" id="company1-growth"></label>
+        </div>
+        <div>
+            <label>成就感 (1-10): <input type="number" min="1" max="10" id="company1-achievement"></label>
+        </div>
+        <div>
+            <label>工作生活平衡 (1-10): <input type="number" min="1" max="10" id="company1-balance"></label>
+        </div>
+    </div>
+
+    <div class="company-form">
+        <h2>第二家公司</h2>
+        <input type="text" id="company2-name" placeholder="公司名称">
+        <div>
+            <label>薪资待遇 (1-10): <input type="number" min="1" max="10" id="company2-salary"></label>
+        </div>
+        <div>
+            <label>人际关系 (1-10): <input type="number" min="1" max="10" id="company2-relationships"></label>
+        </div>
+        <div>
+            <label>学习成长 (1-10): <input type="number" min="1" max="10" id="company2-growth"></label>
+        </div>
+        <div>
+            <label>成就感 (1-10): <input type="number" min="1" max="10" id="company2-achievement"></label>
+        </div>
+        <div>
+            <label>工作生活平衡 (1-10): <input type="number" min="1" max="10" id="company2-balance"></label>
+        </div>
+    </div>
+
+    <button onclick="compareCompanies()">生成对比图</button>
+
+    <div class="chart-container">
+        <canvas id="radarChart"></canvas>
+    </div>
+
+    <script>
+        let myRadarChart = null;
+
+        function compareCompanies() {
+            const company1Name = document.getElementById('company1-name').value;
+            const company2Name = document.getElementById('company2-name').value;
+
+            const company1Scores = [
+                Number(document.getElementById('company1-salary').value),
+                Number(document.getElementById('company1-relationships').value),
+                Number(document.getElementById('company1-growth').value),
+                Number(document.getElementById('company1-achievement').value),
+                Number(document.getElementById('company1-balance').value)
+            ];
+
+            const company2Scores = [
+                Number(document.getElementById('company2-salary').value),
+                Number(document.getElementById('company2-relationships').value),
+                Number(document.getElementById('company2-growth').value),
+                Number(document.getElementById('company2-achievement').value),
+                Number(document.getElementById('company2-balance').value)
+            ];
+
+            // 验证输入
+            if (!company1Name || !company2Name || company1Scores.some(isNaN) || company2Scores.some(isNaN)) {
+                alert('请填写所有字段！');
+                return;
+            }
+
+            if (company1Scores.some(score => score < 1 || score > 10) || 
+                company2Scores.some(score => score < 1 || score > 10)) {
+                alert('所有分数必须在1-10之间！');
+                return;
+            }
+
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            // 如果已经有图表，先销毁它
+            if (myRadarChart) {
+                myRadarChart.destroy();
+            }
+
+            myRadarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['薪资待遇', '人际关系', '学习成长', '成就感', '工作生活平衡'],
+                    datasets: [
+                        {
+                            label: company1Name,
+                            data: company1Scores,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            pointBackgroundColor: 'rgb(255, 99, 132)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgb(255, 99, 132)'
+                        },
+                        {
+                            label: company2Name,
+                            data: company2Scores,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgb(54, 162, 235)',
+                            pointBackgroundColor: 'rgb(54, 162, 235)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgb(54, 162, 235)'
+                        }
+                    ]
+                },
+                options: {
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html> 
