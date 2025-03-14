@@ -8,21 +8,90 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
+            font-size: 14px;
+        }
+        h1 {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+        h2 {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+        h3 {
+            font-size: 15px;
+            margin: 8px 0;
         }
         .company-form {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .company-form div {
+            margin: 5px 0;
         }
         .chart-container {
             position: relative;
-            height: 400px;
-            width: 400px;
-            margin: 0 auto;
+            height: 350px;
+            width: 350px;
+            margin: 10px auto;
         }
-        input[type="number"] {
-            width: 60px;
+        input[type="text"] {
+            width: 150px;
+            padding: 4px;
+            margin-bottom: 8px;
+        }
+        input[type="range"] {
+            width: 150px;
+            vertical-align: middle;
+        }
+        .score-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px 0;
+        }
+        .score-buttons {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .score-button {
+            width: 25px;
+            height: 25px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .score-button:hover {
+            background: #f0f0f0;
+        }
+        .score-button.selected {
+            background: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+        .dimension-label {
+            min-width: 120px;
+            text-align: right;
+            padding-right: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 5px 0;
+        }
+        #areas-container p {
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -64,27 +133,80 @@
                 companyForm.innerHTML = `
                     <h2>第${i}家公司</h2>
                     <input type="text" id="company${i}-name" placeholder="公司名称">
-                    <div>
-                        <label>薪资待遇 (1-10): <input type="number" min="1" max="10" id="company${i}-salary"></label>
+                    <div class="score-container">
+                        <label class="dimension-label">💰 薪资待遇:</label>
+                        <div class="score-buttons" data-company="${i}" data-dimension="salary">
+                            ${generateScoreButtons()}
+                        </div>
                     </div>
-                    <div>
-                        <label>人际关系 (1-10): <input type="number" min="1" max="10" id="company${i}-relationships"></label>
+                    <div class="score-container">
+                        <label class="dimension-label">👥 人际关系:</label>
+                        <div class="score-buttons" data-company="${i}" data-dimension="relationships">
+                            ${generateScoreButtons()}
+                        </div>
                     </div>
-                    <div>
-                        <label>学习成长 (1-10): <input type="number" min="1" max="10" id="company${i}-growth"></label>
+                    <div class="score-container">
+                        <label class="dimension-label">📚 学习成长:</label>
+                        <div class="score-buttons" data-company="${i}" data-dimension="growth">
+                            ${generateScoreButtons()}
+                        </div>
                     </div>
-                    <div>
-                        <label>成就感 (1-10): <input type="number" min="1" max="10" id="company${i}-achievement"></label>
+                    <div class="score-container">
+                        <label class="dimension-label">🌟 成就感:</label>
+                        <div class="score-buttons" data-company="${i}" data-dimension="achievement">
+                            ${generateScoreButtons()}
+                        </div>
                     </div>
-                    <div>
-                        <label>工作生活平衡 (1-10): <input type="number" min="1" max="10" id="company${i}-balance"></label>
+                    <div class="score-container">
+                        <label class="dimension-label">⚖️ 工作生活平衡:</label>
+                        <div class="score-buttons" data-company="${i}" data-dimension="balance">
+                            ${generateScoreButtons()}
+                        </div>
                     </div>
+                    <input type="hidden" id="company${i}-salary" value="">
+                    <input type="hidden" id="company${i}-relationships" value="">
+                    <input type="hidden" id="company${i}-growth" value="">
+                    <input type="hidden" id="company${i}-achievement" value="">
+                    <input type="hidden" id="company${i}-balance" value="">
                 `;
                 container.appendChild(companyForm);
+                
+                // 添加点击事件监听器
+                const scoreButtonGroups = companyForm.querySelectorAll('.score-buttons');
+                scoreButtonGroups.forEach(group => {
+                    group.addEventListener('click', handleScoreClick);
+                });
             }
 
             document.getElementById('compare-button').style.display = 'block';
             document.getElementById('initial-input').style.display = 'none';
+        }
+
+        function generateScoreButtons() {
+            let buttons = '';
+            for (let i = 1; i <= 10; i++) {
+                buttons += `<button class="score-button" data-value="${i}">${i}</button>`;
+            }
+            return buttons;
+        }
+
+        function handleScoreClick(event) {
+            if (!event.target.classList.contains('score-button')) return;
+            
+            const company = event.currentTarget.dataset.company;
+            const dimension = event.currentTarget.dataset.dimension;
+            const value = event.target.dataset.value;
+            
+            // 移除同组中其他按钮的选中状态
+            event.currentTarget.querySelectorAll('.score-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // 添加当前按钮的选中状态
+            event.target.classList.add('selected');
+            
+            // 更新隐藏的input值
+            document.getElementById(`company${company}-${dimension}`).value = value;
         }
 
         function calculateArea(scores) {
@@ -159,7 +281,7 @@
             myRadarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: ['薪资待遇', '人际关系', '学习成长', '成就感', '工作生活平衡'],
+                    labels: ['💰 薪资待遇', '👥 人际关系', '📚 学习成长', '🌟 成就感', '⚖️ 工作生活平衡'],
                     datasets: datasets
                 },
                 options: {
@@ -180,12 +302,24 @@
                 }
             });
 
-            // 显示面积
+            // 显示面积并标记最大值
             const areasContainer = document.getElementById('areas-container');
             areasContainer.innerHTML = '<h3>各公司五维评分面积：</h3>';
-            companies.forEach(company => {
-                const area = calculateArea(company.scores).toFixed(2);
-                areasContainer.innerHTML += `<p>${company.name}: ${area}</p>`;
+            
+            // 计算所有公司的面积
+            const companyAreas = companies.map(company => ({
+                name: company.name,
+                area: calculateArea(company.scores)
+            }));
+            
+            // 找出最大面积
+            const maxArea = Math.max(...companyAreas.map(c => c.area));
+            
+            // 显示结果，为最大面积添加奖杯图标
+            companyAreas.forEach(company => {
+                const areaText = company.area.toFixed(2);
+                const trophy = company.area === maxArea ? ' 🏆' : '';
+                areasContainer.innerHTML += `<p>${company.name}: ${areaText}${trophy}</p>`;
             });
         }
     </script>

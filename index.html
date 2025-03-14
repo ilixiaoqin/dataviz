@@ -1,228 +1,188 @@
 ---
 layout: default
-title: 中证500数据分析
+title: lxq的数据世界
 ---
 
     <!DOCTYPE html>
-    <html lang="zh">
+    <html lang="zh-CN" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://ogp.me/ns/fb#">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>中证500数据分析作品集</title>
-        <style>
+        <title>lxq的数据世界</title>
+        
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="assets/favicon.ico">
+        
+        <!-- Styles -->
+        <style type="text/css">
             body {
+                font-family: "Microsoft YaHei", sans-serif;
                 margin: 0;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-                line-height: 1.6;
-                background-color: #f8f9fa;
-            }
-            
-            .header {
-                background: #fff;
-                padding: 20px 0;
-                position: fixed;
-                width: 100%;
-                top: 0;
-                z-index: 1000;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }
-            
-            .nav {
-                max-width: 1200px;
-                margin: 0 auto;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0 20px;
-            }
-            
-            .nav h1 {
-                margin: 0;
-                font-size: 1.5em;
-                color: #1B4F72;
-            }
-            
-            .nav-links {
-                display: flex;
-                gap: 30px;
-            }
-            
-            .nav-links a {
-                text-decoration: none;
+                padding: 0;
+                background-color: #f5f5f5;
                 color: #333;
-                font-weight: 500;
-                transition: color 0.3s ease;
             }
-            
-            .nav-links a:hover {
-                color: #1B4F72;
+
+            .header {
+                background-color: white;
+                padding: 20px 0;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin-bottom: 30px;
             }
-            
-            .content {
-                max-width: 1200px;
-                margin: 100px auto 50px;
-                padding: 0 20px;
+
+            .header h1 {
+                margin: 0;
+                text-align: center;
+                color: #333;
             }
-            
-            .portfolio {
+
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 20px;
                 display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                grid-template-columns: 3fr 2fr;
                 gap: 30px;
-                margin-top: 50px;
             }
-            
-            .portfolio-item {
-                background: #fff;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-                transition: transform 0.3s ease;
+
+            .section {
+                background: white;
+                border-radius: 8px;
+                padding: 20px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
-            
-            .portfolio-item:hover {
-                transform: translateY(-5px);
-            }
-            
-            .portfolio-item img {
-                width: 100%;
-                height: 250px;
-                object-fit: cover;
-                border-bottom: 1px solid #eee;
-            }
-            
-            .portfolio-info {
-                padding: 25px;
-            }
-            
-            .portfolio-info h3 {
-                margin: 0 0 15px;
-                color: #1B4F72;
-                font-size: 1.3em;
-            }
-            
-            .portfolio-info p {
+
+            .section-title {
                 margin: 0 0 20px;
-                color: #666;
-                font-size: 0.95em;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #eee;
+                color: #333;
+                font-size: 20px;
             }
-            
-            .portfolio-info a {
+
+            .module-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .company-module-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .module img {
+                width: 100%;
+                height: 160px;
+                object-fit: cover;
+                border-radius: 4px;
+                margin-bottom: 15px;
+            }
+
+            .module {
+                background: white;
+                border-radius: 6px;
+                padding: 15px;
+                transition: transform 0.2s ease;
+            }
+
+            .module:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+
+            .module h3 {
+                margin: 0 0 10px;
+                color: #444;
+                font-size: 16px;
+            }
+
+            .module p {
+                margin: 0 0 15px;
+                color: #666;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            .module-link {
                 display: inline-block;
-                padding: 10px 20px;
-                background-color: #1B4F72;
+                padding: 8px 16px;
+                background-color: #007bff;
                 color: white;
                 text-decoration: none;
-                border-radius: 6px;
-                transition: all 0.3s ease;
-                font-weight: 500;
+                border-radius: 4px;
+                font-size: 14px;
+                transition: background-color 0.2s ease;
             }
-            
-            .portfolio-info a:hover {
-                background-color: #2874A6;
-                transform: translateY(-2px);
+
+            .module-link:hover {
+                background-color: #0056b3;
             }
-            
-            #about {
-                background: #fff;
-                padding: 30px;
-                border-radius: 12px;
-                margin-top: 50px;
-                box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-            }
-            
-            #about h2 {
-                color: #1B4F72;
-                margin-top: 0;
-            }
-            
-            .footer {
-                text-align: center;
-                padding: 30px;
-                background: #1B4F72;
-                color: #fff;
-                margin-top: 50px;
-            }
-            
-            .footer p {
-                margin: 0;
-                opacity: 0.9;
+
+            @media (max-width: 768px) {
+                .container {
+                    grid-template-columns: 1fr;
+                }
             }
         </style>
     </head>
     <body>
-        <header class="header">
-            <nav class="nav">
-                <h1>中证500数据分析</h1>
-                <div class="nav-links">
-                    <a href="#portfolio">可视化作品</a>
-                    <a href="#about">项目说明</a>
-                </div>
-            </nav>
-        </header>
-        
-        <main class="content">
-            <section id="portfolio" class="portfolio">
-                <div class="portfolio-item">
-                    <img src="treemap.png" alt="行业分布树状图">
-                    <div class="portfolio-info">
-                        <h3>行业分布分析</h3>
-                        <p>使用树状图展示上市公司行业分布情况，通过方块大小和颜色深浅直观显示各行业的市值规模，帮助投资者快速了解行业集中度。</p>
-                        <a href="treemap.html" target="_blank">查看分析</a>
-                    </div>
-                </div>
-                
-                <div class="portfolio-item">
-                    <img src="map.png" alt="地理分布地图">
-                    <div class="portfolio-info">
-                        <h3>地理分布分析</h3>
-                        <p>通过中国地图展示中证500公司的地理分布特征，颜色深浅反映各省份的上市公司总市值，揭示经济发展的区域特点。</p>
-                        <a href="location_map.html" target="_blank">查看分析</a>
-                    </div>
-                </div>
-                
-                <div class="portfolio-item">
-                    <img src="shareholders_treemap.png" alt="股东数据分析">
-                    <div class="portfolio-info">
-                        <h3>股东结构分析</h3>
-                        <p>深入分析中证500公司的股东持股情况，展示主要股东的持股比例和变动情况，反映公司治理结构特征。</p>
-                        <a href="shareholders_treemap.html" target="_blank">查看分析</a>
-                    </div>
-                
-                <div class="portfolio-item">
-                    <img src="comparison.png" alt="公司满意度对比">
-                    <div class="portfolio-info">
-                        <h3>公司满意度对比</h3>
-                        <p>提供交互式工具，帮助用户对比不同公司的满意度指标，包括市值、收益率等关键指标的对比分析。</p>
-                        <a href="company-comparison.html" target="_blank">查看工具</a>
-                    </div>
-                </div>
+        <div class="header">
+            <h1>lxq的数据世界</h1>
+        </div>
 
-                <div class="portfolio-item">
-                    <img src="comparison.png" alt="公司满意度对比">
-                    <div class="portfolio-info">
-                        <h3>公司满意度对比</h3>
-                        <p>提供交互式工具，帮助用户对比不同公司的满意度指标，包括市值、收益率等关键指标的对比分析。</p>
-                        <a href="company-comparison.html" target="_blank">查看工具</a>
+        <div class="container">
+            <!-- 数据可视化部分 -->
+            <div class="section">
+                <h2 class="section-title">数据可视化</h2>
+                <div class="module-grid">
+                    <div class="module">
+                        <img src="asstes/image/treemap.jpg" alt="行业分布分析">
+                        <h3>行业分布分析</h3>
+                        <p>使用矩形树图展示中证500指数成分股的行业分布情况，反映不同行业的市值占比。</p>
+                        <a href="treemap.html" class="module-link">查看分析</a>
+                    </div>
+                    <div class="module">
+                        <img src="asstes/image/location_map.jpg" alt="地理分布分析">
+                        <h3>地理分布分析</h3>
+                        <p>展示中证500指数成分股公司在全国各省市的地理分布情况。</p>
+                        <a href="location_map.html" class="module-link">查看分布</a>
+                    </div>
+                    <div class="module">
+                        <img src="asstes/image/shareholders_treemap.jpg" alt="股东结构分析">
+                        <h3>股东结构分析</h3>
+                        <p>分析中证500指数成分股的股东结构特征，展示主要股东持股情况。</p>
+                        <a href="shareholders_treemap.html" class="module-link">查看分析</a>
+                    </div>
+                    <div class="module">
+                        <img src="asstes/image/top_shareholders_network.jpg" alt="股东关系网络">
+                        <h3>股东关系网络</h3>
+                        <p>通过网络图展示中证500指数成分股之间的股东关联关系。</p>
+                        <a href="top_shareholders_network.html" class="module-link">查看网络</a>
                     </div>
                 </div>
-</div>
-            </section>
-            
-            <section id="about">
-                <h2>关于项目</h2>
-                <p>本项目针对中证500指数成分股进行多维度数据分析和可视化展示。通过Python数据处理和现代可视化技术，从行业分布、地理分布、股东结构等多个角度，直观呈现中证500指数的特征。</p>
-                <p>主要技术栈：</p>
-                <ul>
-                    <li>数据获取：Selenium自动化爬虫</li>
-                    <li>数据处理：Pandas</li>
-                    <li>数据可视化：Pyecharts、Plotly</li>
-                </ul>
-            </section>
-        </main>
-        
-        <footer class="footer">
-            <p>© 2024 中证500数据分析项目</p>
-        </footer>
+            </div>
+
+            <!-- 公司对比部分 -->
+            <div class="section">
+                <h2 class="section-title">公司对比分析</h2>
+                <div class="company-module-grid">
+                    <div class="module">
+                        <img src="asstes/image/company-comparison.jpg" alt="公司对比分析">
+                        <h3>多维度公司对比</h3>
+                        <p>支持多维度财务指标对比分析，包括盈利能力、营运能力、偿债能力等关键指标的横向对比。深入分析不同公司的经营状况、财务表现和市场表现。</p>
+                        <a href="company-comparison.html" class="module-link">开始对比</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer-outer">
+            <div class="container">
+                <p>© 2024 lxq的数据世界 | 专注数据分析与可视化</p>
+            </div>
+        </div>
     </body>
     </html>
     
